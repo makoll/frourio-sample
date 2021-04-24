@@ -2,7 +2,6 @@ import Head from 'next/head'
 import useAspidaSWR from '@aspida/swr'
 import styles from '~/styles/Countries.module.css'
 import { apiClient } from '~/utils/apiClient'
-import UserBanner from '~/components/UserBanner'
 
 const Countries = () => {
   const { data: countries, error } = useAspidaSWR(apiClient.countries)
@@ -12,13 +11,11 @@ const Countries = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>countries</title>
+        <title>Countries</title>
         <link rel="icon" href="/favicon.png" />
       </Head>
 
       <main className={styles.main}>
-        <UserBanner />
-
         <h1 className={styles.title}>Countries</h1>
 
         <div>
