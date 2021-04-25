@@ -4,6 +4,8 @@ import styles from '~/styles/User.module.css'
 // import { apiClient } from '~/utils/apiClient'
 import { useRouter } from 'next/router'
 // import type { User } from '$prisma/client'
+import dynamic from 'next/dynamic'
+const MapView = dynamic(() => import('~/components/MapView'), { ssr: false })
 
 const user = { name: 'hirose' }
 type TUser = { name: string }
@@ -55,6 +57,7 @@ const UserPresentation = ({ user }: { user: TUser }) => {
             </ul>
           </div>
           <div>Map: </div>
+          <MapView />
         </div>
       </main>
     </div>
