@@ -3,7 +3,7 @@ import useAspidaSWR from '@aspida/swr'
 import styles from '~/styles/Countries.module.css'
 import { apiClient } from '~/utils/apiClient'
 
-const Countries = () => {
+const Users = () => {
   const { data: users, error } = useAspidaSWR(apiClient.users)
   if (error) return <div>failed to load</div>
   if (!users) return <div>loading...</div>
@@ -30,4 +30,4 @@ const Countries = () => {
   )
 }
 
-export default Countries
+export default Users
