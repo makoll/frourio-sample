@@ -21,6 +21,13 @@ const UserContainer = () => {
   return <UserPresentation user={user} />
 }
 
+type TStayedSummary = {
+  name: string
+  code: string
+  count: number
+  isLiving: boolean
+  isLived: boolean
+}
 const UserPresentation = ({ user }: { user: TUser }) => {
   const countries = [
     { name: 'Japan', code: 'JP', count: 1, isLiving: true, isLived: true },
@@ -30,38 +37,50 @@ const UserPresentation = ({ user }: { user: TUser }) => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>User</title>
+        <title>{`${user.name}'s stayed countries`}</title>
         <link rel="icon" href="/favicon.png" />
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>User</h1>
+        <h1 className={styles.title}>{`${user.name}'s stayed countries`}</h1>
 
         <div className={styles.contents}>
-          <div>Name: {user.name}</div>
-          <div>
-            Detail:
-            <ul className={styles.countries}>
-              {countries.map((country) => (
-                <div className={styles.countryInfo} key={country.code}>
-                  <div>Country name: {country.name} </div>
-                  {country.isLiving && <div>在住</div>}
-                  {!country.isLiving && (
-                    <div>Visit count: {country.count}回</div>
-                  )}
-                  {!country.isLiving && country.isLived && (
-                    <div>滞在歴あり</div>
-                  )}
-                </div>
-              ))}
-            </ul>
-          </div>
-          <div>Map: </div>
           <MapView />
+          <Countries countries={countries} />
         </div>
       </main>
     </div>
   )
 }
 
+const Countries = ({ countries }: { countries: TStayedSummary[] }) => {
+  return (
+    <table className={styles.countries}>
+      <thead>
+        <tr className={styles.countriesHeader}>
+          <th>Name</th>
+          <th>Count</th>
+          <th>Living</th>
+          <th>Lived</th>
+        </tr>
+      </thead>
+      <tbody>
+        {countries.map((country, i) => (
+          <Country country={country} key={i} />
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
+const Country = ({ country }: { country: TStayedSummary }) => {
+  return (
+    <tr>
+      <td>{country.name}</td>
+      <td>{country.isLiving ? '-' : country.count}</td>
+      <td>{country.isLiving ? '◯' : '-'}</td>
+      <td>{!country.isLiving && country.isLived ? '◯' : '-'}</td>
+    </tr>
+  )
+}
 export default UserContainer
