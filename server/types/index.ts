@@ -4,6 +4,11 @@ export type UserInfo = {
   icon: string
 }
 
+export type Stayed = {
+  name: string
+  count: number
+}
+
 export type AuthHeader = {
   authorization: string
 }

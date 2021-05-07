@@ -5,35 +5,33 @@ import styles from '~/styles/User.module.css'
 import { useRouter } from 'next/router'
 // import type { User } from '$prisma/client'
 import dynamic from 'next/dynamic'
+import useAspidaSWR from '@aspida/swr'
+import { apiClient } from '~/utils/apiClient'
+import { Stayed } from '~/server/types'
 const MapView = dynamic(() => import('~/components/MapView'), { ssr: false })
 
 const user = { name: 'hirose' }
 type TUser = { name: string }
 const UserContainer = () => {
+  const { data: stayeds } = useAspidaSWR(apiClient.stayeds)
+
   const router = useRouter()
   const queryUserId = router.query.id as string
   console.log(10, queryUserId)
 
-  // const { data: users, error } = useAspidaSWR(apiClient.users)
   // if (error) return <div>failed to load</div>
   // if (!users) return <div>loading...</div>
 
-  return <UserPresentation user={user} />
+  return <UserPresentation user={user} stayeds={stayeds ?? []} />
 }
 
-type TStayedSummary = {
-  name: string
-  code: string
-  count: number
-  isLiving: boolean
-  isLived: boolean
-}
-const UserPresentation = ({ user }: { user: TUser }) => {
-  const countries = [
-    { name: 'Japan', code: 'JP', count: 1, isLiving: true, isLived: true },
-    { name: 'USA', code: 'US', count: 3, isLiving: false, isLived: false },
-    { name: 'Taiwan', code: 'TW', count: 4, isLiving: false, isLived: true }
-  ]
+const UserPresentation = ({
+  user,
+  stayeds
+}: {
+  user: TUser
+  stayeds: Stayed[]
+}) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -46,40 +44,36 @@ const UserPresentation = ({ user }: { user: TUser }) => {
 
         <div className={styles.contents}>
           <MapView />
-          <Countries countries={countries} />
+          <Countries stayeds={stayeds} />
         </div>
       </main>
     </div>
   )
 }
 
-const Countries = ({ countries }: { countries: TStayedSummary[] }) => {
+const Countries = ({ stayeds }: { stayeds: Stayed[] }) => {
   return (
     <table className={styles.countries}>
       <thead>
         <tr className={styles.countriesHeader}>
           <th>Name</th>
           <th>Count</th>
-          <th>Living</th>
-          <th>Lived</th>
         </tr>
       </thead>
       <tbody>
-        {countries.map((country, i) => (
-          <Country country={country} key={i} />
+        {stayeds.map((stayed, i) => (
+          <Country stayed={stayed} key={i} />
         ))}
       </tbody>
     </table>
   )
 }
 
-const Country = ({ country }: { country: TStayedSummary }) => {
+const Country = ({ stayed }: { stayed: Stayed }) => {
   return (
     <tr>
-      <td>{country.name}</td>
-      <td>{country.isLiving ? '-' : country.count}</td>
-      <td>{country.isLiving ? '◯' : '-'}</td>
-      <td>{!country.isLiving && country.isLived ? '◯' : '-'}</td>
+      <td>{stayed.name}</td>
+      <td>{stayed.count}</td>
     </tr>
   )
 }
