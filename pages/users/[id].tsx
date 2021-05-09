@@ -1,37 +1,27 @@
 import Head from 'next/head'
-// import useAspidaSWR from '@aspida/swr'
 import styles from '~/styles/User.module.css'
-// import { apiClient } from '~/utils/apiClient'
 import { useRouter } from 'next/router'
-// import type { User } from '$prisma/client'
 import dynamic from 'next/dynamic'
 import useAspidaSWR from '@aspida/swr'
 import { apiClient } from '~/utils/apiClient'
-import { Stayed } from '~/server/types'
+import { Stay } from '~/server/types'
 const MapView = dynamic(() => import('~/components/MapView'), { ssr: false })
 
 const user = { name: 'hirose' }
 type TUser = { name: string }
 const UserContainer = () => {
-  const { data: stayeds } = useAspidaSWR(apiClient.stayeds)
+  const { data: stays, error } = useAspidaSWR(apiClient.stays)
 
   const router = useRouter()
   const queryUserId = router.query.id as string
-  console.log(10, queryUserId)
 
-  // if (error) return <div>failed to load</div>
-  // if (!users) return <div>loading...</div>
+  if (error) return <div>failed to load</div>
+  if (!stays) return <div>loading...</div>
 
-  return <UserPresentation user={user} stayeds={stayeds ?? []} />
+  return <UserPresentation user={user} stays={stays ?? []} />
 }
 
-const UserPresentation = ({
-  user,
-  stayeds
-}: {
-  user: TUser
-  stayeds: Stayed[]
-}) => {
+const UserPresentation = ({ user, stays }: { user: TUser; stays: Stay[] }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -44,14 +34,14 @@ const UserPresentation = ({
 
         <div className={styles.contents}>
           <MapView />
-          <Countries stayeds={stayeds} />
+          <Countries stays={stays} />
         </div>
       </main>
     </div>
   )
 }
 
-const Countries = ({ stayeds }: { stayeds: Stayed[] }) => {
+const Countries = ({ stays }: { stays: Stay[] }) => {
   return (
     <table className={styles.countries}>
       <thead>
@@ -61,7 +51,7 @@ const Countries = ({ stayeds }: { stayeds: Stayed[] }) => {
         </tr>
       </thead>
       <tbody>
-        {stayeds.map((stayed, i) => (
+        {stays.map((stayed, i) => (
           <Country stayed={stayed} key={i} />
         ))}
       </tbody>
@@ -69,7 +59,7 @@ const Countries = ({ stayeds }: { stayeds: Stayed[] }) => {
   )
 }
 
-const Country = ({ stayed }: { stayed: Stayed }) => {
+const Country = ({ stayed }: { stayed: Stay }) => {
   return (
     <tr>
       <td>{stayed.name}</td>

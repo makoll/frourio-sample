@@ -4,7 +4,7 @@ export type UserInfo = {
   icon: string
 }
 
-export type Stayed = {
+export type Stay = {
   name: string
   count: number
 }
