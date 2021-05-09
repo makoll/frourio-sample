@@ -15,10 +15,21 @@ model Task {
 
 model Country {
   id    Int     @id @default(autoincrement())
-  name String
+  name  String
+  stays Stay[]
 }
 
 model User {
   id    Int     @id @default(autoincrement())
-  name String
+  name  String
+  stays Stay[]
+}
+
+model Stay {
+  id        Int      @id @default(autoincrement())
+  count     Int      @default(0)
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  countryId Int?
+  country   Country? @relation(fields: [countryId], references: [id])
 }
