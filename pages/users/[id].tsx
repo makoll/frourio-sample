@@ -10,10 +10,12 @@ const MapView = dynamic(() => import('~/components/MapView'), { ssr: false })
 const user = { name: 'hirose' }
 type TUser = { name: string }
 const UserContainer = () => {
-  const { data: stays, error } = useAspidaSWR(apiClient.stays)
-
   const router = useRouter()
-  const queryUserId = router.query.id as string
+  const queryUserId = Number(router.query.id as string)
+
+  const { data: stays, error } = useAspidaSWR(apiClient.stays, {
+    query: { id: queryUserId }
+  })
 
   if (error) return <div>failed to load</div>
   if (!stays) return <div>loading...</div>
