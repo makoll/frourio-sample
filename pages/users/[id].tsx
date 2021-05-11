@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import useAspidaSWR from '@aspida/swr'
 import { apiClient } from '~/utils/apiClient'
 import { Stay, User } from '~/server/types'
+
 const MapView = dynamic(() => import('~/components/MapView'), { ssr: false })
 
 const UserContainer = () => {
@@ -37,7 +38,7 @@ const UserPresentation = ({ user, stays }: { user: User; stays: Stay[] }) => {
         <h1 className={styles.title}>{`${user.name}'s stayed countries`}</h1>
 
         <div className={styles.contents}>
-          <MapView />
+          <MapView stays={stays} />
           <Countries stays={stays} />
         </div>
       </main>

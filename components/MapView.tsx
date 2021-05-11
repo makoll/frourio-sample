@@ -1,11 +1,12 @@
 import Chart from 'react-google-charts'
+import { Stay } from '~/server/types'
 
-const MapView = () => {
+const MapView = ({ stays }: { stays: Stay[] }) => {
   const options = {
     region: 'world',
     legend: 'none',
     colorAxis: {
-      maxValue: 1,
+      maxValue: 20,
       minValue: 0,
       colors: ['white', '#DBFFDB', '#CCEDD2', '#CCEDCC', '#BEEDBE']
     },
@@ -17,11 +18,14 @@ const MapView = () => {
     { role: string; p: { html: boolean } }
   ]
   type GoogleChartsData = GoogleChartsHeader | [string, number, string]
+  const chartDataDetails: [string, number, string][] = stays.map((stay) => [
+    stay.name,
+    stay.count,
+    `count: ${stay.count}`
+  ])
   const googleChartsData: GoogleChartsData[] = [
     ['Country', 'Value', { role: 'tooltip', p: { html: true } }],
-    ['US', 3, ''],
-    ['JP', 100, `is living`],
-    ['TW', 4, `is lived`]
+    ...chartDataDetails
   ]
   return (
     <Chart
