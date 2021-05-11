@@ -4,6 +4,11 @@ export type UserInfo = {
   icon: string
 }
 
+export type User = {
+  id: number
+  name: string
+}
+
 export type Stay = {
   name: string
   count: number

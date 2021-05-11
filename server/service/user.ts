@@ -7,6 +7,8 @@ import {
   API_USER_PASS,
   API_UPLOAD_DIR
 } from './envValues'
+import { User } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 const iconsDir = API_UPLOAD_DIR && path.resolve(API_UPLOAD_DIR, 'icons')
 const createIconURL = (dir: string, name: string) =>
@@ -50,3 +52,10 @@ export const changeIcon = async (id: string, iconFile: Multipart) => {
     ...getUserInfo(id)
   }
 }
+
+const prisma = new PrismaClient()
+
+export const getUser = (id: User['id']) =>
+  prisma.user.findUnique({
+    where: { id }
+  })

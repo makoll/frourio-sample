@@ -1,16 +1,10 @@
-import type { AuthHeader, UserInfo } from '$/types'
-import type { ReadStream } from 'fs'
+import type { User } from '$/types'
 
 export type Methods = {
   get: {
-    reqHeaders: AuthHeader
-    resBody: UserInfo
-  }
-
-  post: {
-    reqHeaders: AuthHeader
-    reqFormat: FormData
-    reqBody: { icon: File | ReadStream }
-    resBody: UserInfo
+    query: {
+      id: number
+    }
+    resBody: User | null
   }
 }

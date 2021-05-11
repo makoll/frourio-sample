@@ -4,26 +4,28 @@ import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import useAspidaSWR from '@aspida/swr'
 import { apiClient } from '~/utils/apiClient'
-import { Stay } from '~/server/types'
+import { Stay, User } from '~/server/types'
 const MapView = dynamic(() => import('~/components/MapView'), { ssr: false })
 
-const user = { name: 'hirose' }
-type TUser = { name: string }
 const UserContainer = () => {
   const router = useRouter()
   const queryUserId = Number(router.query.id as string)
+
+  const { data: user, error: error2 } = useAspidaSWR(apiClient.user, {
+    query: { id: queryUserId }
+  })
 
   const { data: stays, error } = useAspidaSWR(apiClient.stays, {
     query: { id: queryUserId }
   })
 
-  if (error) return <div>failed to load</div>
-  if (!stays) return <div>loading...</div>
+  if (error || error2) return <div>failed to load</div>
+  if (!stays || !user) return <div>loading...</div>
 
   return <UserPresentation user={user} stays={stays ?? []} />
 }
 
-const UserPresentation = ({ user, stays }: { user: TUser; stays: Stay[] }) => {
+const UserPresentation = ({ user, stays }: { user: User; stays: Stay[] }) => {
   return (
     <div className={styles.container}>
       <Head>
